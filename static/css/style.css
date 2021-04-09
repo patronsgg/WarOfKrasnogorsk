@@ -1,6 +1,12 @@
-.main_title {
-    text-align: center;
+.navbar-brand {
+    align-items: center;
 }
-.main_logo {
-    width: 70%;
+.nav-title {
+    margin-left: 2rem;
+}
+.nav-username {
+    margin-right: 6rem;
+}
+.main-logo {
+    width: 60%;
 }

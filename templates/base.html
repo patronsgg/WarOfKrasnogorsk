@@ -8,9 +8,33 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <h1 class="main_title">War of Krasnogorsk</h1>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+    <header>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex" href="/">
+                    <img src="{{ url_for('static', filename='img/1.jpg') }}" width="100" height="100" class="d-inline-block align-text-top">
+                    <h2 class="nav-title d-inline-block">War of Krasnogorsk</h2>
+                </a>
+                <div class="d-flex">
+                    {% if current_user.is_authenticated %}
+                        <div class="navbar-brand d-flex">
+                            <h4 class="nav-username">{{ current_user.name }}</h4>
+                            <a class="btn btn-danger" href="/logout">Log out</a>
+                        </div>
+                    {% else %}
+                        <div>
+                            <a class="btn btn-primary" href="/register">Register</a>
+                            <a class="btn btn-success" href="/login">Log in</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main role="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 </body>
 </html>
