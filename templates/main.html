@@ -2,6 +2,13 @@
 
 {% block content %}
 {% if not current_user.choose_area %}
+    <h3>Выбери свой район</h3>
+    <p>
+            <a href="/choose_area/1">Чернево 1</a>
+            <a href="/choose_area/2">Чернево 2</a>
+            <a href="/choose_area/3">Бруски</a>
+            <a href="/choose_area/4">Изумрудки</a>
+    </p>
     <img src="{{ url_for('static', filename='img/1.png') }}" class="main-logo">
 {% else %}
     <h4>Район выбран</h4>

@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from werkzeug.utils import redirect
 from data.users import User
+from data.players import Player
 from data import db_session
 from forms.register import RegisterForm
 from forms.login import LoginForm
@@ -30,12 +31,12 @@ def register():
                                    message='Пароли не совпадают')
         db_sess = db_session.create_session()
         if (db_sess.query(User).filter(User.email == form.email.data).first()) or \
-                (db_sess.query(User).filter(User.name == form.name.data).first()):
+                (db_sess.query(User).filter(User.username == form.username.data).first()):
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message='Такой пользователь уже есть')
         user = User(
-            name=form.name.data,
+            username=form.username.data,
             email=form.email.data,
             choose_area=False
         )
@@ -71,6 +72,23 @@ def load_user(user_id):
 @login_required
 def logout():
     logout_user()
+    return redirect('/')
+
+
+@app.route('/choose_area/<int:id>')
+@login_required
+def choose_area(id):
+    db_sess = db_session.create_session()
+    areas = {1: 'Чернево 1', 2: 'Чернево 2', 3: 'Бруски', 4: 'Изумрудки'}
+    user = db_sess.query(User).get(current_user.id)
+    player = Player(
+        user=current_user.id,
+        start_area=areas[id],
+        value=50
+    )
+    user.choose_area = True
+    db_sess.add(player)
+    db_sess.commit()
     return redirect('/')
 
 
