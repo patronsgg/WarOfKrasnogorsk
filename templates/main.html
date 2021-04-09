@@ -2,7 +2,7 @@
 
 {% block content %}
 {% if current_user.choose_area == False %}
-    <img src="{{ url_for('static', filename='img/1.jpg') }}" />
+    <img src="{{ url_for('static', filename='img/1.jpg') }}" class="main_logo">
 {% else %}
     <h4>Район выбран</h4>
 {% endif %}
