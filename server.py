@@ -1,11 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 from werkzeug.utils import redirect
 from data.users import User
 from data.players import Player
+from data.areas import Area
 from data import db_session
 from forms.register import RegisterForm
 from forms.login import LoginForm
-from flask_login import login_user, LoginManager, logout_user, login_required, current_user
+from flask_login import login_user, LoginManager, logout_user, \
+    login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abobaABOBAaboba'
@@ -37,8 +39,7 @@ def register():
                                    message='Такой пользователь уже есть')
         user = User(
             username=form.username.data,
-            email=form.email.data,
-            choose_area=False
+            email=form.email.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -78,15 +79,16 @@ def logout():
 @app.route('/choose_area/<int:id>')
 @login_required
 def choose_area(id):
+    if current_user.player:
+        return abort(404)
     db_sess = db_session.create_session()
-    areas = {1: 'Чернево 1', 2: 'Чернево 2', 3: 'Бруски', 4: 'Изумрудки'}
-    user = db_sess.query(User).get(current_user.id)
+    if not db_sess.query(Area).get(id):
+        return abort(404)
     player = Player(
-        user=current_user.id,
-        start_area=areas[id],
-        value=50
+        user_id=current_user.id,
+        money=1000,
+        start_area_id=id
     )
-    user.choose_area = True
     db_sess.add(player)
     db_sess.commit()
     return redirect('/')
