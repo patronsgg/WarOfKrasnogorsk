@@ -1,8 +1,17 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+header {
+    margin-bottom: 3rem;
+}
+.navbar {
+    background-color: #10171f;
+}
 .navbar-brand {
     align-items: center;
 }
 .nav-title {
-    margin-left: 2rem;
+    margin-left: 3rem;
 }
 .nav-username {
     margin-right: 6rem;
