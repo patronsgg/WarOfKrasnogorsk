@@ -21,7 +21,7 @@
                 <div class="d-flex">
                     {% if current_user.is_authenticated %}
                         <div class="navbar-brand d-flex">
-                            <h4 class="nav-username">{{ current_user.name }}</h4>
+                            <h4 class="nav-username">{{ current_user.username }}</h4>
                             <a class="btn btn-danger" href="/logout">Log out</a>
                         </div>
                     {% else %}
