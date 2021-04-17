@@ -2,7 +2,8 @@ from flask import Flask, render_template, abort
 from werkzeug.utils import redirect
 from data.users import User
 from data.players import Player
-from data.areas import Area
+from data.races import Race
+from data.army import Army
 from data import db_session
 from forms.register import RegisterForm
 from forms.login import LoginForm
@@ -82,16 +83,29 @@ def choose_area(id):
     if current_user.player:
         return abort(404)
     db_sess = db_session.create_session()
-    if not db_sess.query(Area).get(id):
+    if not db_sess.query(Race).get(id):
         return abort(404)
     player = Player(
         user_id=current_user.id,
         money=1000,
-        start_area_id=id
+        start_race_id=id
     )
-    db_sess.add(player)
+    army = Army(
+        player_id=player.id,
+        race_id=id,
+        number=5
+    )
+    db_sess.add_all([player, army])
     db_sess.commit()
     return redirect('/')
+
+
+@app.route('/leadersboard')
+@login_required
+def leaders_board():
+    db_sess = db_session.create_session()
+    # доделать
+    return
 
 
 if __name__ == '__main__':

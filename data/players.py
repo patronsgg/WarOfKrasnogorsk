@@ -9,8 +9,7 @@ class Player(SqlAlchemyBase):
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     user_id = sa.Column(sa.Integer, sa.ForeignKey('users.id'))
-    start_area_id = sa.Column(sa.Integer, sa.ForeignKey('areas.id'))
+    start_race_id = sa.Column(sa.Integer, sa.ForeignKey('races.id'))
     money = sa.Column(sa.Integer, nullable=True)
-#   count_army = sa.Column(sa.Integer, nullable=True)
     user = orm.relation('User', back_populates='player')
-    start_area = orm.relation('Area')
+    start_race = orm.relation('Race')

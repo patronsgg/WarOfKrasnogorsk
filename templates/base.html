@@ -19,18 +19,23 @@
                          width="160" height="80" class="d-inline-block align-text-top">
                     <h2 class="nav-title d-inline-block">War of Krasnogorsk</h2>
                 </a>
-                <div class="d-flex">
-                    {% if current_user.is_authenticated %}
-                        <div class="navbar-brand d-flex">
-                            <h4 class="nav-username">{{ current_user.username }}</h4>
-                            <a class="btn btn-danger" href="/logout">Log out</a>
-                        </div>
-                    {% else %}
-                        <div class="navbar-brand">
-                            <a class="btn btn-primary" href="/register">Register</a>
-                            <a class="btn btn-success" href="/login">Log in</a>
-                        </div>
-                    {% endif %}
+                {% if current_user.is_authenticated %}
+                    <div class="navbar-brand">
+                        <a class="btn btn-secondary" href="/">Армия и экономика</a>
+                        <a class="btn btn-secondary" href="/">Рейды</a>
+                        <a class="btn btn-secondary" href="/">Лидеры</a>
+                        <a class="btn btn-secondary" href="/">Профиль</a>
+                    </div>
+                    <div class="navbar-brand d-flex">
+                        <h4 class="nav-username">{{ current_user.username }}</h4>
+                        <a class="btn btn-danger" href="/logout">Выйти</a>
+                    </div>
+                {% else %}
+                    <div class="navbar-brand">
+                        <a class="btn btn-primary" href="/register">Register</a>
+                        <a class="btn btn-success" href="/login">Log in</a>
+                    </div>
+                {% endif %}
                 </div>
             </div>
         </nav>

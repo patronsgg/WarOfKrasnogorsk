@@ -1,3 +1,3 @@
 from . import users
 from . import players
-from . import areas
+from . import races

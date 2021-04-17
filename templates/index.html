@@ -1,19 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div id="carouselExampleFade" class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
+    <h1>О игре.</h1>
+    <p>Проект "War of Krasnogorsk" - это браузерная игра, в которой вы получите возможность сражаться за небольшой городок Красногорск,
+        соревнуясь с другими игроками в реальном времени. На старте у вас на выбор будет четыре района, в каждом из которых живут свои обитатели.
+        Наращивайте армию, накапливайте деньги, совершайте рейды на соседей и попробуйте стать повелителем Красногорка!</p>
+    <div id="carouselExampleFade" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="{{ url_for('static', filename='img/area_1.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Чернево 1 - Бомжи.</h5>
+                    <p>Самые хладнокровная раса в Красногорске,
+                        за чекушку водки они готовы сделать все что угодно,
+                        от танцев под моргенштерна в тикток до завоевания всего мира.</p>
+                </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ url_for('static', filename='img/area_2.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Чернево 2 - Интеллигенты.</h5>
+                    <p>Интеллигенты основались на Чернево-2, именно отсюда идет поток знаний.
+                        Живут богато, готовы переучить другую расу. Полностью отдаются науке,
+                        потому что считают что именно за ней сила.</p>
+                </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ url_for('static', filename='img/area_3.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Брусчатый посёлок - Гопники.</h5>
+                    <p>Возможно именно эта раса хитрее чем лисы. Они бдительны и всегда стоят на страже своего района.
+                        Гопники могут стопорнуть кого-либо, спросить за жизнь и принести украденные вещи в общак.</p>
+                </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ url_for('static', filename='img/area_4.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Изумрудные холмы - Кавказцы.</h5>
+                    <p>Кавказцы занимают всю площадь Изумрудных Холмов, всегда носят нож в левом кармане,
+                        а в правом пистолет Макарова. Они плохо понимают по-русски, живут по своим правилам.
+                        Когда им грозит опасность, кавказцы включают на своей девятке музыку и начинают говорить на "французском" языке.</p>
+                </div>
             </div>
         </div>
         <a class="carousel-control-prev" type="button" role="button"
