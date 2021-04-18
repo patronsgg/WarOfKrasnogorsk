@@ -12,8 +12,15 @@
     <img src="{{ url_for('static', filename='img/logo.png') }}" class="main-logo">
 {% else %}
     <h3>Купи:</h3>
-    {% for item in current_user.player.army %}
-        <a href="/buy/">{{ item.race.title }}</a>
-    {% endfor %}
+    <div>
+        <select class="browser-default custom-select">
+            <option selected>Выбери юнита</option>
+            {% for item in current_user.player.army %}
+                <option>{{ item.race.title }}</option>
+           {% endfor %}
+        </select>
+        <p><input type="number" size="3" min="1" max="999"></p>
+
+    </div>
 {% endif %}
 {% endblock %}

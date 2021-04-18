@@ -9,6 +9,7 @@ from forms.register import RegisterForm
 from forms.login import LoginForm
 from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
+from get_money import main
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abobaABOBAaboba'
@@ -115,5 +116,6 @@ def leaders_board():
 
 
 if __name__ == '__main__':
+    main()
     db_session.global_init('db/warkrasnogorsk.db')
     app.run(host='0.0.0.0', port=8080)
