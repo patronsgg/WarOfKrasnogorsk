@@ -13,3 +13,4 @@ class Player(SqlAlchemyBase):
     money = sa.Column(sa.Integer, nullable=True)
     user = orm.relation('User', back_populates='player')
     start_race = orm.relation('Race')
+    army = orm.relation('Army', back_populates='player')

@@ -5,8 +5,9 @@ from .db_session import SqlAlchemyBase
 
 
 class Army(SqlAlchemyBase):
-    __tablename__ = 'armies'
+    __tablename__ = 'army'
 
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     player_id = sa.Column(sa.Integer, sa.ForeignKey('players.id'))
     race_id = sa.Column(sa.Integer, sa.ForeignKey('races.id'))
     number = sa.Column(sa.Integer, nullable=True)

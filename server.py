@@ -90,12 +90,14 @@ def choose_area(id):
         money=1000,
         start_race_id=id
     )
+    db_sess.add(player)
+    db_sess.commit()
     army = Army(
         player_id=player.id,
         race_id=id,
         number=5
     )
-    db_sess.add_all([player, army])
+    db_sess.add(army)
     db_sess.commit()
     return redirect('/')
 

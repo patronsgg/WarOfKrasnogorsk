@@ -1,6 +1,7 @@
 from data.users import User
 from data.players import Player
 from data.races import Race
+from data.army import Army
 from data import db_session
 
 db_session.global_init('warkrasnogorsk.db')
@@ -25,5 +26,11 @@ player.user_id = 1
 player.money = 1000
 player.start_race_id = 1
 db_sess.add(player)
+
+army = Army()
+army.player_id = 1
+army.number = 5
+army.race_id = 1
+db_sess.add(army)
 
 db_sess.commit()
