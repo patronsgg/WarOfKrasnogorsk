@@ -8,10 +8,10 @@ db_session.global_init('warkrasnogorsk.db')
 db_sess = db_session.create_session()
 
 areas = [
-    Race(title='Бомжи'),
-    Race(title='Интеллигенты'),
-    Race(title='Гопники'),
-    Race(title='Кавказцы')
+    Race(title='Бомжи', cost=5),
+    Race(title='Интеллигенты', cost=4),
+    Race(title='Гопники', cost=3),
+    Race(title='Кавказцы', cost=2)
 ]
 db_sess.add_all(areas)
 

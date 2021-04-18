@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Лидеры War of Kransnogorsk</h1>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Никнейм</th>
+            <th scope="col">Количество юнитов</th>
+            <th scope="col">Деньги</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in leaders %}
+           <tr>
+              <td class="table-success">{{ item[0] }}</td>
+              <td class="table-success">{{ item[1] }}</td>
+              <td class="table-success">{{ item[2] }}</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

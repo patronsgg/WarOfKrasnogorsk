@@ -11,6 +11,9 @@
     </p>
     <img src="{{ url_for('static', filename='img/logo.png') }}" class="main-logo">
 {% else %}
-    <h4>Район выбран</h4>
+    <h3>Купи:</h3>
+    {% for item in current_user.player.army %}
+        <a href="/buy/">{{ item.race.title }}</a>
+    {% endfor %}
 {% endif %}
 {% endblock %}

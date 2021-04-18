@@ -23,10 +23,11 @@
                     <div class="navbar-brand">
                         <a class="btn btn-secondary" href="/">Армия и экономика</a>
                         <a class="btn btn-secondary" href="/">Рейды</a>
-                        <a class="btn btn-secondary" href="/">Лидеры</a>
+                        <a class="btn btn-secondary" href="/leadersboard">Лидеры</a>
                         <a class="btn btn-secondary" href="/">Профиль</a>
                     </div>
                     <div class="navbar-brand d-flex">
+                        <h4>Деньги: {{ current_user.player.money }}</h4>
                         <h4 class="nav-username">{{ current_user.username }}</h4>
                         <a class="btn btn-danger" href="/logout">Выйти</a>
                     </div>

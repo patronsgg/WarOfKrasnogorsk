@@ -106,8 +106,12 @@ def choose_area(id):
 @login_required
 def leaders_board():
     db_sess = db_session.create_session()
-    # доделать
-    return
+    users = db_sess.query(User).all()
+    leaders = []
+    for x in users:
+        leaders.append((x.username, sum([item.number for item in x.player.army]), x.player.money))
+    leaders.sort(key=lambda x: (-x[1], -x[2], x[0]))
+    return render_template('leadersboard.html', leaders=leaders)
 
 
 if __name__ == '__main__':
