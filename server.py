@@ -7,6 +7,7 @@ from data.army import Army
 from data import db_session
 from forms.register import RegisterForm
 from forms.login import LoginForm
+from forms.buy import BuyForm
 from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
 from get_money import main
@@ -18,10 +19,24 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def root():
     if current_user.is_authenticated:
-        return render_template('main.html')
+        if not current_user.player:
+            return render_template('main.html')
+        db_sess = db_session.create_session()
+        player = db_sess.query(Player).get(current_user.id)
+        available_races = [army.race_id for army in player.army]
+        buy_form = BuyForm()
+        buy_form.race.choices = list(filter(lambda x: x[0] in available_races, buy_form.race.choices))
+        if buy_form.validate_on_submit():
+            race_id, number = int(buy_form.race.data), buy_form.number.data
+            race = db_sess.query(Race).get(race_id)
+            player.money -= race.cost * number
+            army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
+            army.number += number
+            db_sess.commit()
+        return render_template('main.html', buy_form=buy_form)
     return render_template('index.html')
 
 

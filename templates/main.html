@@ -11,16 +11,29 @@
     </p>
     <img src="{{ url_for('static', filename='img/logo.png') }}" class="main-logo">
 {% else %}
-    <h3>Купи:</h3>
-    <div>
-        <select class="browser-default custom-select">
-            <option selected>Выбери юнита</option>
-            {% for item in current_user.player.army %}
-                <option>{{ item.race.title }}</option>
-           {% endfor %}
-        </select>
-        <p><input type="number" size="3" min="1" max="999"></p>
-
-    </div>
+    <h3>Нанять юнитов в армию:</h3>
+    <form action="" method="post">
+        {{ buy_form.hidden_tag() }}
+        <p>
+            {{ buy_form.race.label }}<br>
+            {{ buy_form.race }}<br>
+            {% for error in buy_form.race.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ buy_form.number.label }}<br>
+            {{ buy_form.number }}<br>
+            {% for error in buy_form.number.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
+    </form>
 {% endif %}
 {% endblock %}
