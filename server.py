@@ -26,6 +26,8 @@ def root():
         if not current_user.player:
             return render_template('main.html')
         db_sess = db_session.create_session()
+        other = ([(x.race.title, x.number) for x in current_user.player.army], current_user.player.money,
+                 sum([x.number for x in current_user.player.army]))
         player = db_sess.query(Player).get(current_user.id)
         available_races = [army.race_id for army in player.army]
         buy_form = BuyForm()
@@ -37,7 +39,7 @@ def root():
             army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
             army.number += number
             db_sess.commit()
-        return render_template('main.html', buy_form=buy_form)
+        return render_template('main.html', buy_form=buy_form, other=other)
     return render_template('index.html')
 
 
@@ -129,6 +131,12 @@ def leaders_board():
         leaders.append((x.username, sum([item.number for item in x.player.army]), x.player.money))
     leaders.sort(key=lambda x: (-x[1], -x[2], x[0]))
     return render_template('leadersboard.html', leaders=leaders)
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
 
 
 if __name__ == '__main__':

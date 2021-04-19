@@ -2,38 +2,87 @@
 
 {% block content %}
 {% if not current_user.player %}
-    <h3>Выбери свой район</h3>
-    <p>
-        <a href="/choose_area/1">Чернево 1</a>
-        <a href="/choose_area/2">Чернево 2</a>
-        <a href="/choose_area/3">Бруски</a>
-        <a href="/choose_area/4">Изумрудки</a>
-    </p>
-    <img src="{{ url_for('static', filename='img/logo.png') }}" class="main-logo">
+    <h2 style="text-align: center">Выбери свой район</h2>
+    <img src="{{ url_for('static', filename='img/all_map.svg') }}" class="main-logo">
+    <div class="card-group">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-1.svg') }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Чернево - 1</h5>
+            <p class="card-text">Основания масса жителей чернево-1 - это бомжи.
+                Выбери этот район и почувствую мощь среди бомжей</p>
+            <a href="/choose_area/1" class="btn btn-primary">Выбрать!</a>
+          </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-2.svg') }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Чернево - 2</h5>
+            <p class="card-text">Жители Чернево-2 - интеллегенты, с ними ты сможешь научить город жить</p>
+            <a href="/choose_area/2" class="btn btn-primary">Выбрать!</a>
+          </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ url_for('static', filename='img/bruski.svg') }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Брусчатый посёлок</h5>
+            <p class="card-text">Брусчатый посёлок или же Бруски захвачены гопниками,
+                поэтому ты спокойно сможешь всех спрашивать за жизнь</p>
+            <a href="/choose_area/3" class="btn btn-primary">Выбрать!</a>
+          </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ url_for('static', filename='img/emeralds_hills.svg') }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Изумрудные холмы</h5>
+            <p class="card-text">Кавказцы расположились в Изумрудных холмах,
+                удивительно ведь они не знают даже русского языка!</p>
+            <a href="/choose_area/4" class="btn btn-primary">Выбрать!</a>
+          </div>
+        </div>
+    </div>
 {% else %}
-    <h3>Нанять юнитов в армию:</h3>
-    <form action="" method="post">
-        {{ buy_form.hidden_tag() }}
-        <p>
-            {{ buy_form.race.label }}<br>
-            {{ buy_form.race }}<br>
-            {% for error in buy_form.race.errors %}
-                <p class="alert alert-danger" role="alert">
-                    {{ error }}
-                </p>
-            {% endfor %}
-        </p>
-        <p>
-            {{ buy_form.number.label }}<br>
-            {{ buy_form.number }}<br>
-            {% for error in buy_form.number.errors %}
-                <p class="alert alert-danger" role="alert">
-                    {{ error }}
-                </p>
-            {% endfor %}
-        </p>
-        <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
-        {{ message }}
-    </form>
+    <div class="main-block">
+        <h3>Нанять юнитов в армию:</h3>
+        <form action="" method="post">
+            {{ buy_form.hidden_tag() }}
+            <p>
+                {{ buy_form.race.label }}<br>
+                {{ buy_form.race }}<br>
+                {% for error in buy_form.race.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+            <p>
+                {{ buy_form.number.label }}<br>
+                {{ buy_form.number }}<br>
+                {% for error in buy_form.number.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+            <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
+            {{ message }}
+        </form>
+    </div>
+    <div class="main-block">
+        <h3>Статистика:</h3>
+        <p>Армия:</p>
+        <ol>
+        {% for item in other[0] %}
+            <li>{{ item[0] }} - {{ item[1] }}ед.</li>
+        {% endfor %}
+        </ol>
+        <p>Деньги: {{ other[1] }}</p>
+        <p class="text-success">Денег в минуту: {{ other[2] }} +</p>
+        <p>Количество мощи армии: ...</p>
+    </div>
+    <div class="main-block">
+        <h3>Доступные апгрейды расы:</h3>
+        <a href="/upgrade">Пока что нет!</a>
+    </div>
 {% endif %}
 {% endblock %}
