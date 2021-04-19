@@ -11,6 +11,7 @@ from forms.buy import BuyForm
 from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
 from get_money import main
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abobaABOBAaboba'
@@ -133,4 +134,5 @@ def leaders_board():
 if __name__ == '__main__':
     main()
     db_session.global_init('db/warkrasnogorsk.db')
-    app.run(host='0.0.0.0', port=8080)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
