@@ -31,6 +31,7 @@ army = Army()
 army.player_id = 1
 army.number = 5
 army.race_id = 1
+army.upgrade_lvl = 1
 db_sess.add(army)
 
 db_sess.commit()

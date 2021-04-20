@@ -65,7 +65,7 @@
                 {% endfor %}
             </p>
             <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
-            {{ message }}
+            {{ message_buy }}
         </form>
     </div>
     <div class="main-block">
@@ -82,7 +82,21 @@
     </div>
     <div class="main-block">
         <h3>Доступные апгрейды расы:</h3>
-        <a href="/upgrade">Пока что нет!</a>
+        <p>*Здесь можно увеличить мощь армии*</p>
+        <form action="" method="post">
+            {{ upgrade_form.hidden_tag() }}
+            <p>
+                {{ upgrade_form.race_upg.label }}<br>
+                {{ upgrade_form.race_upg }}<br>
+                {% for error in upgrade_form.race_upg.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+            <p>{{ upgrade_form.submit_upg(type="submit", class="btn btn-primary") }}</p>
+            {{ message_upg }}
+        </form>
     </div>
 {% endif %}
 {% endblock %}

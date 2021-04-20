@@ -8,6 +8,7 @@ from data import db_session
 from forms.register import RegisterForm
 from forms.login import LoginForm
 from forms.buy import BuyForm
+from forms.upgrade import UpgradeForm
 from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
 from get_money import main
@@ -26,20 +27,41 @@ def root():
         if not current_user.player:
             return render_template('main.html')
         db_sess = db_session.create_session()
+        message_buy, message_upg = '', ''
         other = ([(x.race.title, x.number) for x in current_user.player.army], current_user.player.money,
                  sum([x.number for x in current_user.player.army]))
+
         player = db_sess.query(Player).get(current_user.id)
         available_races = [army.race_id for army in player.army]
         buy_form = BuyForm()
         buy_form.race.choices = list(filter(lambda x: x[0] in available_races, buy_form.race.choices))
-        if buy_form.validate_on_submit():
+        if buy_form.validate_on_submit() and buy_form.submit.data:
             race_id, number = int(buy_form.race.data), buy_form.number.data
             race = db_sess.query(Race).get(race_id)
-            player.money -= race.cost * number
-            army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
-            army.number += number
-            db_sess.commit()
-        return render_template('main.html', buy_form=buy_form, other=other)
+            if race.cost * number > player.money:
+                message_buy = 'Недостаточно денег!'
+            else:
+                player.money -= race.cost * number
+                army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
+                army.number += number
+                db_sess.commit()
+
+        available_races = [army.race_id for army in player.army]
+        upgrade_form = UpgradeForm()
+        upgrade_form.race_upg.choices = list(filter(lambda x: x[0] in available_races, upgrade_form.race_upg.choices))
+        if upgrade_form.validate_on_submit() and upgrade_form.submit_upg.data:
+            race_id = int(upgrade_form.race_upg.data)
+            army_list = list(filter(lambda x: x.race_id == race_id, player.army))[0]
+            if army_list.upgrade_lvl >= 3:
+                message_upg = 'Достигнут максимальный уровень!'
+            elif (1.25 if army_list.upgrade_lvl == 1 else 1.6) * army_list.number > player.money:
+                message_upg = 'Недостаточно денег!'
+            else:
+                player.money -= (1.25 if army_list.upgrade_lvl == 1 else 1.6) * army_list.number
+                army_list.upgrade_lvl += 1
+                db_sess.commit()
+        return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
+                               message_buy=message_buy, message_upg=message_upg)
     return render_template('index.html')
 
 
@@ -114,7 +136,8 @@ def choose_area(id):
     army = Army(
         player_id=player.id,
         race_id=id,
-        number=5
+        number=5,
+        level_race=1
     )
     db_sess.add(army)
     db_sess.commit()
@@ -137,6 +160,12 @@ def leaders_board():
 @login_required
 def profile():
     return render_template('profile.html')
+
+
+@app.route('/raid')
+@login_required
+def raid():
+    return render_template()
 
 
 if __name__ == '__main__':
