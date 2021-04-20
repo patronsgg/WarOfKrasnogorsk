@@ -42,46 +42,48 @@
         </div>
     </div>
 {% else %}
-    <div class="main-block">
-        <h3>Нанять юнитов в армию:</h3>
-        <form action="" method="post">
-            {{ buy_form.hidden_tag() }}
-            <p>
-                {{ buy_form.race.label }}<br>
-                {{ buy_form.race }}<br>
-            </p>
-            <p>
-                {{ buy_form.number.label }}<br>
-                {{ buy_form.number }}<br>
-            </p>
-            <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
-            {{ message_buy }}
-        </form>
-    </div>
-    <div class="main-block">
-        <h3>Статистика:</h3>
-        <p>Армия:</p>
-        <ol>
-        {% for item in other[0] %}
-            <li>{{ item[0] }} - {{ item[1] }}ед.</li>
-        {% endfor %}
-        </ol>
-        <p>Деньги: {{ other[1] }}</p>
-        <p class="text-success">Денег в минуту: {{ other[2] }} +</p>
-        <p>Количество мощи армии: ...</p>
-    </div>
-    <div class="main-block">
-        <h3>Доступные апгрейды расы:</h3>
-        <p>*Здесь можно увеличить мощь армии*</p>
-        <form action="" method="post">
-            {{ upgrade_form.hidden_tag() }}
-            <p>
-                {{ upgrade_form.race_upg.label }}<br>
-                {{ upgrade_form.race_upg }}<br>
-            </p>
-            <p>{{ upgrade_form.submit_upg(type="submit", class="btn btn-primary") }}</p>
-            {{ message_upg }}
-        </form>
+    <div class="container" style="display: flex; align-items: center;">
+        <div class="main-block">
+            <h3>Нанять юнитов в армию:</h3>
+            <form action="" method="post">
+                {{ buy_form.hidden_tag() }}
+                <p>
+                    {{ buy_form.race.label }}<br>
+                    {{ buy_form.race }}<br>
+                </p>
+                <p>
+                    {{ buy_form.number.label }}<br>
+                    {{ buy_form.number }}<br>
+                </p>
+                <p>{{ buy_form.submit(type="submit", class="btn btn-primary") }}</p>
+                {{ message_buy }}
+            </form>
+        </div>
+        <div class="main-block">
+            <h3>Статистика:</h3>
+            <p>Армия:</p>
+            <ol>
+            {% for item in other[0] %}
+                <li>{{ item[0] }} - {{ item[1] }}ед.</li>
+            {% endfor %}
+            </ol>
+            <p>Деньги: {{ other[1] }}</p>
+            <p class="text-success">Денег в минуту: {{ other[2] }} +</p>
+            <p>Количество мощи армии: ...</p>
+        </div>
+        <div class="main-block">
+            <h3>Доступные апгрейды расы:</h3>
+            <p>*Здесь можно увеличить мощь армии*</p>
+            <form action="" method="post">
+                {{ upgrade_form.hidden_tag() }}
+                <p>
+                    {{ upgrade_form.race_upg.label }}<br>
+                    {{ upgrade_form.race_upg }}<br>
+                </p>
+                <p>{{ upgrade_form.submit_upg(type="submit", class="btn btn-primary") }}</p>
+                {{ message_upg }}
+            </form>
+        </div>
     </div>
 {% endif %}
 {% endblock %}

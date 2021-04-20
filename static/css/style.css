@@ -26,6 +26,9 @@ header {
     padding: 2rem 2rem;
     border: 2px solid #000;
     display: inline-block;
+    width: 100%;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
 }
 .profile-logo {
     width: 10%;
