@@ -9,9 +9,12 @@ from forms.register import RegisterForm
 from forms.login import LoginForm
 from forms.buy import BuyForm
 from forms.upgrade import UpgradeForm
+from forms.raid import RaidForm
 from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
 from get_money import main
+from random import choice, random
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -137,7 +140,7 @@ def choose_area(id):
         player_id=player.id,
         race_id=id,
         number=5,
-        level_race=1
+        upgrade_lvl=1
     )
     db_sess.add(army)
     db_sess.commit()
@@ -162,10 +165,38 @@ def profile():
     return render_template('profile.html')
 
 
-@app.route('/raid')
+@app.route('/raid', methods=['GET', 'POST'])
 @login_required
 def raid():
-    return render_template()
+    db_sess = db_session.create_session()
+
+    available_users = [user.username for user in db_sess.query(User).all() if user.id != current_user.id]
+    raidform = RaidForm()
+    raidform.users.choices = available_users
+    if raidform.validate_on_submit():
+        username = raidform.users.data
+        user_attack = db_sess.query(User).filter(User.username == current_user.username).first()
+        user_defend = db_sess.query(User).filter(User.username == username).first()
+        army_attack = user_attack.player.army
+        army_defend = user_defend.player.army
+        if sum([item.number for item in army_attack]) > sum([x.number for x in army_defend]):
+            new_race = choice(army_defend)
+            ratio = random() + 1
+            if new_race.race_id not in [x.race_id for x in army_attack]:
+                prize = Army(
+                    player_id=user_attack.player.id,
+                    race_id=new_race.race_id,
+                    number=round(new_race.number * ratio),
+                    upgrade_lvl=1
+                )
+                db_sess.add(prize)
+            else:
+                army_to_edit = choice(army_attack)
+                army_to_edit.number += round(new_race.number)
+            new_race.number -= round((ratio - 1) * new_race.number)
+            db_sess.commit()
+        return render_template('raid.html', raidform=raidform, message='Рейд прошел успешно!')
+    return render_template('raid.html', raidform=raidform)
 
 
 if __name__ == '__main__':

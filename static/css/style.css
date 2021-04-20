@@ -32,3 +32,7 @@ header {
     height: 10%;
     border: solid 2px rgb(36, 11, 255)
 }
+.raid-choose {
+    border: 2px solid #000;
+    width: 30%;
+}
