@@ -5,9 +5,12 @@ from data.players import Player
 
 def get_money():
     db_sess = db_session.create_session()
-    army = [(x, sum(item.number for item in x.army)) for x in db_sess.query(Player).all()]
-    for x in army:
-        x[0].money += x[1]
+    players = db_sess.query(Player).all()
+    for x in players:
+        count = 0
+        for item in x.army:
+            count += (item.number * item.race.bring_money)
+        x.money += count
     db_sess.commit()
     threading.Timer(60, get_money).start()
 

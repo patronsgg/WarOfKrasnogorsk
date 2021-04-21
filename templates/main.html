@@ -69,20 +69,24 @@
             </ol>
             <p>Деньги: {{ other[1] }}</p>
             <p class="text-success">Денег в минуту: {{ other[2] }} +</p>
-            <p>Количество мощи армии: ...</p>
+            <p>Мощь армии: {{ other[3] }} силы</p>
         </div>
         <div class="main-block">
             <h3>Доступные апгрейды расы:</h3>
             <p>*Здесь можно увеличить мощь армии*</p>
-            <form action="" method="post">
-                {{ upgrade_form.hidden_tag() }}
-                <p>
-                    {{ upgrade_form.race_upg.label }}<br>
-                    {{ upgrade_form.race_upg }}<br>
-                </p>
-                <p>{{ upgrade_form.submit_upg(type="submit", class="btn btn-primary") }}</p>
-                {{ message_upg }}
-            </form>
+            {% if upgrade_form.race_upg.choices|length >= 1 %}
+                <form action="" method="post">
+                    {{ upgrade_form.hidden_tag() }}
+                    <p>
+                        {{ upgrade_form.race_upg.label }}<br>
+                        {{ upgrade_form.race_upg }}<br>
+                    </p>
+                    <p>{{ upgrade_form.submit_upg(type="submit", class="btn btn-primary") }}</p>
+                    {{ message_upg }}
+                </form>
+            {% else %}
+                <p>Доступных для вас апгрейдов нет.</p>
+            {% endif %}
         </div>
     </div>
 {% endif %}

@@ -3,17 +3,21 @@
 {% block content %}
 <h3>Напасть на другого игрока</h3>
 <p>*За успешный рейд - вам начисляются деньги и юниты игрока на которого вы напали*</p>
-<form action="" method="post">
-    {{ raidform.hidden_tag() }}
-    {{ raidform.users.label }}
-    {% for item in raidform.users %}
-        <div class="raid-choose">
-            <p class="text-success">
-                {{ item }} - {{ item.label }}
-            </p>
-        </div>
-    {% endfor %}
-    <p>{{ raidform.submit(type="submit", class="btn btn-primary") }}</p>
-    {{ message }}
-</form>
+{% if raidform.users.choices|length >= 1 %}
+    <form action="" method="post">
+        {{ raidform.hidden_tag() }}
+        {{ raidform.users.label }}
+        {% for item in raidform.users %}
+            <div class="raid-choose">
+                <p class="text-success">
+                    {{ item }} - {{ item.label }}
+                </p>
+            </div>
+        {% endfor %}
+        <p>{{ raidform.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
+    </form>
+{% else %}
+<p>Тут пока не кого нет</p>
+{% endif %}
 {% endblock %}

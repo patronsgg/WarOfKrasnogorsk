@@ -2,7 +2,7 @@
 
 {% block content %}
     <img src="{{ url_for('static', filename='img/profile_img.jpg') }}" class="profile-logo">
-    <h3>{{ current_user.username }}</h3>
+    <h3>Имя пользователя: {{ current_user.username }}</h3>
     <h3>Почта: {{ current_user.email }}</h3>
     <h3>Дата создания: {{ current_user.created_date }}</h3>
 {% endblock %}
