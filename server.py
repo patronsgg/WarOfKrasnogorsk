@@ -51,7 +51,7 @@ def root():
                 army.number += number
                 db_sess.commit()
 
-        available_races = [army.race_id for army in player.army]
+        available_races = [army.race_id for army in player.army if army.upgrade_lvl != 3]
         upgrade_form = UpgradeForm()
         upgrade_form.race_upg.choices = list(filter(lambda x: x[0] in available_races, upgrade_form.race_upg.choices))
         if upgrade_form.validate_on_submit() and upgrade_form.submit_upg.data:
@@ -190,7 +190,7 @@ def raid():
                                                             if x.upgrade_lvl == 1 else x.upgrade_lvl * 2)) for x in
                               army_defend])
         chance = random()
-        if power_attack > defence_defend and (power_attack == defence_defend and chance >= 0.5):
+        if power_attack > defence_defend or (power_attack == defence_defend and chance >= 0.5):
             new_race = choice(army_defend)
             ratio = random()
             if new_race.race_id not in [x.race_id for x in army_attack]:
