@@ -9,7 +9,7 @@ def get_money():
     for x in players:
         count = 0
         for item in x.army:
-            count += (item.number * item.race.bring_money)
+            count += (item.number * item.race.income)
         x.money += count
     db_sess.commit()
     threading.Timer(60, get_money).start()
