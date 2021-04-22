@@ -208,7 +208,7 @@ def raid():
         if diff > 0:
             message += 'Рейд прошел успешно! Вы получили часть денег и армии оппонента.'
             raid_.is_success = True
-            withdraw_money = round(defender.player.money * uniform(0.25, 0.45))
+            withdraw_money = round(defender.money * uniform(0.25, 0.45))
             raid_.withdraw_money = withdraw_money
             prize_army = choice([x for x in army_defender])
             prize_army_number = ceil(uniform(0.1, 0.2) * prize_army.number)
@@ -230,7 +230,7 @@ def raid():
             else:
                 army_to_add = list(filter(lambda x: x.race_id == prize_army.race_id, army_attacker))[0]
                 army_to_add.number += prize_army_number
-            defender.player.last_defend = datetime.now()
+            defender.last_defend = datetime.now()
         else:
             raid_.is_success = False
             losses = raid_losses(defender, attacker)
