@@ -224,7 +224,7 @@ def raid():
                     level=1
                 )
                 db_sess.add(prize)
-                message += f'\nВы открыли новую расу - {prize_army.race.title}!'
+                message += f'Вы открыли новую расу - {prize_army.race.title}!'
                 raid_.prize_race_title = prize_army.race.title
                 raid_.prize_race_number = prize_army_number
             else:
