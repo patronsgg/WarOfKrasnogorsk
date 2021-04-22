@@ -73,6 +73,8 @@ def root():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
+    if current_user.is_authenticated:
+        return abort(404)
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -84,10 +86,9 @@ def register():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message='Такой пользователь уже есть')
-        user = User(
-            username=form.username.data,
-            email=form.email.data
-        )
+        user = User()
+        user.username = form.username.data
+        user.email = form.email.data
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
