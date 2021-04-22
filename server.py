@@ -170,8 +170,11 @@ def leaders_board():
     users = [x for x in db_sess.query(User).all() if x.player]
     leaders = []
     for x in users:
-        leaders.append((x.username, sum([item.number for item in x.player.army]), x.player.money))
-    leaders.sort(key=lambda x: (-x[1], -x[2], x[0]))
+        leaders.append((x.username, sum([item.number for item in x.player.army]),
+                        ((sum([get_stats_with_upgrades(item)[0] for item in x.player.army]) +
+                          sum([get_stats_with_upgrades(item)[1] for item in x.player.army])) // 2),
+                        x.player.money))
+    leaders.sort(key=lambda x: (-x[2], -x[1], -x[3], x[0]))
     return render_template('leadersboard.html', leaders=leaders)
 
 

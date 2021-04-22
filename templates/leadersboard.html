@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th scope="col">Никнейм</th>
+            <th scope="col">Мощь армии</th>
             <th scope="col">Количество юнитов</th>
             <th scope="col">Деньги</th>
         </tr>
@@ -14,8 +15,9 @@
         {% for item in leaders %}
            <tr>
               <td class="table-success">{{ item[0] }}</td>
-              <td class="table-success">{{ item[1] }}</td>
               <td class="table-success">{{ item[2] }}</td>
+              <td class="table-success">{{ item[1] }}</td>
+              <td class="table-success">{{ item[3] }}</td>
             </tr>
        {% endfor %}
     </tbody>

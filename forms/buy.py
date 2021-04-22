@@ -7,5 +7,5 @@ class BuyForm(FlaskForm):
     race = SelectField('Раса', choices=[
         (1, 'Бомжи'), (2, 'Интеллигенты'), (3, 'Гопники'), (4, 'Кавказцы')
     ], validators=[DataRequired()])
-    number = IntegerField('Кол-во', validators=[DataRequired()])
+    number = IntegerField('Кол-во юнитов', validators=[DataRequired()])
     submit = SubmitField('Нанять')
