@@ -29,10 +29,12 @@ login_manager.init_app(app)
 @app.route('/', methods=['GET', 'POST'])
 def root():
     if current_user.is_authenticated:
-        player = current_user.player
-        if not player:
+        if not current_user.player:
             return render_template('main.html')
+
         db_sess = db_session.create_session()
+        player = db_sess.query(Player).get(current_user.id)
+
         message_buy, message_upg = '', ''
         total_attack = sum([get_stats_with_upgrades(x)[0] for x in player.army])
         total_defense = sum([get_stats_with_upgrades(x)[1] for x in player.army])
