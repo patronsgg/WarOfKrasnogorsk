@@ -265,8 +265,10 @@ def check_time(last_defend):
 
 
 def raid_losses(winner, loser):
-    losses_winner = [round(x.number * uniform(0.2, 0.3)) for x in winner.army]
-    losses_loser = [round(x.number * uniform(0.35, 0.45)) for x in loser.army]
+    losses_loser = [round(x.number * uniform(0.4, 0.5)) for x in loser.army]
+    total_losses_loser, winner_army_num = sum(losses_loser), len(winner.army)
+    max_army_losses_winner = total_losses_loser // winner_army_num
+    losses_winner = [round(uniform(0.75, 0.85) * max_army_losses_winner) for _ in winner.army]
     for i, army in enumerate(winner.army):
         army.number -= losses_winner[i]
     for i, army in enumerate(loser.army):
