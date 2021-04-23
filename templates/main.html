@@ -6,39 +6,51 @@
     <img src="{{ url_for('static', filename='img/all_map.svg') }}" class="main-logo">
     <div class="card-group">
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-1.svg') }}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Чернево - 1</h5>
-            <p class="card-text">Основания масса жителей чернево-1 - это бомжи.
-                Выбери этот район и почувствуй мощь среди остальных</p>
-            <a href="/choose_area/1" class="btn btn-primary">Выбрать!</a>
-          </div>
+            <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-1.svg') }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Чернево - 1</h5>
+                <p class="card-text">
+                    Основная масса жителей Чернево 1 - это бомжи. Выбери этот район и
+                    почувствуй мощь среди остальных, ведь у бомжей высокие характеристики
+                    атаки и защиты!
+                </p>
+                <a href="/choose_area/1" class="btn btn-primary">Выбрать!</a>
+            </div>
         </div>
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-2.svg') }}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Чернево - 2</h5>
-            <p class="card-text">Жители Чернево-2 - интеллегенты, с ними ты сможешь научить город жить</p>
-            <a href="/choose_area/2" class="btn btn-primary">Выбрать!</a>
-          </div>
+            <img class="card-img-top" src="{{ url_for('static', filename='img/chernevo-2.svg') }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Чернево - 2</h5>
+                <p class="card-text">
+                    Жители Чернево 2 - интеллигенты, с ними ты сможешь научить город жить.
+                    Они - наиболее сбалансированная по параметрам раса.
+                </p>
+                <a href="/choose_area/2" class="btn btn-primary">Выбрать!</a>
+            </div>
         </div>
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="{{ url_for('static', filename='img/bruski.svg') }}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Брусчатый посёлок</h5>
-            <p class="card-text">Брусчатый посёлок или же Бруски захвачены гопниками,
-                поэтому ты спокойно сможешь всех спрашивать за жизнь</p>
-            <a href="/choose_area/3" class="btn btn-primary">Выбрать!</a>
-          </div>
+            <img class="card-img-top" src="{{ url_for('static', filename='img/bruski.svg') }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Брусчатый посёлок</h5>
+                <p class="card-text">
+                    Брусчатый посёлок или же Бруски захвачены гопниками, поэтому ты
+                    спокойно сможешь всех спрашивать за жизнь. Гопники сильны в нападении
+                    и недорого просят за найм.
+                </p>
+                <a href="/choose_area/3" class="btn btn-primary">Выбрать!</a>
+            </div>
         </div>
         <div class="card" style="width: 18rem;">
           <img class="card-img-top" src="{{ url_for('static', filename='img/emeralds_hills.svg') }}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Изумрудные холмы</h5>
-            <p class="card-text">Кавказцы расположились в Изумрудных холмах,
-                удивительно ведь они не знают даже русского языка!</p>
-            <a href="/choose_area/4" class="btn btn-primary">Выбрать!</a>
-          </div>
+              <div class="card-body">
+                  <h5 class="card-title">Изумрудные холмы</h5>
+                  <p class="card-text">
+                      Кавказцы расположились в Изумрудных холмах. Удивительно, они не знают
+                      русского языка, однако приносят наибольший доход и просят оплату меньше всех
+                      других рас.
+                  </p>
+                  <a href="/choose_area/4" class="btn btn-primary">Выбрать!</a>
+              </div>
         </div>
     </div>
 {% else %}

@@ -34,8 +34,6 @@ def root():
 
         db_sess = db_session.create_session()
         player = db_sess.query(Player).get(current_user.id)
-
-        message_buy, message_upg = '', ''
         total_attack = sum([get_stats_with_upgrades(x)[0] for x in player.army])
         total_defense = sum([get_stats_with_upgrades(x)[1] for x in player.army])
         army_power = (total_attack + total_defense) // 2
@@ -56,7 +54,7 @@ def root():
             race = db_sess.query(Race).get(race_id)
             if race.cost * number > player.money:
                 return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                       message_buy='Недостаточно денег!', message_upg='')
+                                       message_buy='Недостаточно денег!')
             else:
                 player.money -= race.cost * number
                 army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
@@ -69,7 +67,7 @@ def root():
             army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
             if army.level == 3:
                 return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                       message_buy='', message_upg='Достигнут максимальный уровень!')
+                                       message_upg='Достигнут максимальный уровень!')
             else:
                 total = 0
                 if army.level == 2:
@@ -78,14 +76,13 @@ def root():
                     total = army.number * army.race.cost + 1000
                 if total > player.money:
                     return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                           message_buy='', message_upg='Недостаточно денег!')
+                                           message_upg='Недостаточно денег!')
                 else:
                     player.money -= total
                     army.level += 1
                     db_sess.commit()
                     return redirect('/')
-        return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                               message_buy=message_buy, message_upg=message_upg)
+        return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other)
     return render_template('index.html')
 
 
