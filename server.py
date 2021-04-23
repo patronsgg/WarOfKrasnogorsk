@@ -46,25 +46,30 @@ def root():
         available_races = [army.race_id for army in player.army]
         buy_form = BuyForm()
         buy_form.race.choices = list(filter(lambda x: x[0] in available_races, buy_form.race.choices))
+
+        available_races = [army.race_id for army in player.army if army.level != 3]
+        upgrade_form = UpgradeForm()
+        upgrade_form.race_upg.choices = list(filter(lambda x: x[0] in available_races, upgrade_form.race_upg.choices))
+
         if buy_form.validate_on_submit() and buy_form.submit.data:
             race_id, number = int(buy_form.race.data), buy_form.number.data
             race = db_sess.query(Race).get(race_id)
             if race.cost * number > player.money:
-                message_buy = 'Недостаточно денег!'
+                return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
+                                       message_buy='Недостаточно денег!', message_upg='')
             else:
-                message_buy = 'Найм произведён успешно!'
                 player.money -= race.cost * number
                 army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
                 army.number += number
                 db_sess.commit()
-        available_races = [army.race_id for army in player.army if army.level != 3]
-        upgrade_form = UpgradeForm()
-        upgrade_form.race_upg.choices = list(filter(lambda x: x[0] in available_races, upgrade_form.race_upg.choices))
+                return redirect('/')
+
         if upgrade_form.validate_on_submit() and upgrade_form.submit_upg.data:
             race_id = int(upgrade_form.race_upg.data)
             army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
             if army.level == 3:
-                message_upg = 'Достигнут максимальный уровень!'
+                return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
+                                       message_buy='', message_upg='Достигнут максимальный уровень!')
             else:
                 total = 0
                 if army.level == 2:
@@ -72,12 +77,13 @@ def root():
                 elif army.level == 1:
                     total = army.number * army.race.cost + 1000
                 if total > player.money:
-                    message_upg = 'Недостаточно денег!'
+                    return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
+                                           message_buy='', message_upg='Недостаточно денег!')
                 else:
-                    message_upg = 'Апгрейд произведён успешно!'
                     player.money -= total
                     army.level += 1
                     db_sess.commit()
+                    return redirect('/')
         return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
                                message_buy=message_buy, message_upg=message_upg)
     return render_template('index.html')
