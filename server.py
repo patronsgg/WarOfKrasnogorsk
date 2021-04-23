@@ -170,13 +170,13 @@ def choose_area(id):
 @login_required
 def leaders_board():
     db_sess = db_session.create_session()
-    users = [x for x in db_sess.query(User).all() if x.player]
+    players = db_sess.query(Player).all()
     leaders = []
-    for x in users:
-        leaders.append((x.username, sum([item.number for item in x.player.army]),
-                        ((sum([get_stats_with_upgrades(item)[0] for item in x.player.army]) +
-                          sum([get_stats_with_upgrades(item)[1] for item in x.player.army])) // 2),
-                        x.player.money))
+    for player in players:
+        leaders.append((
+            player.user.username, sum([item.number for item in player.army]),
+            get_full_army_power(player.army), player.money
+        ))
     leaders.sort(key=lambda x: (-x[2], -x[1], -x[3], x[0]))
     return render_template('leadersboard.html', leaders=leaders)
 
@@ -191,18 +191,25 @@ def profile():
 @login_required
 def raid():
     db_sess = db_session.create_session()
-
-    available_users = [
-        user.username for user in db_sess.query(User).all() if user.id != current_user.id
-        and user.player and check_time(user.player.last_defend)
-    ]
+    available_users = []
+    for user in db_sess.query(User).all():
+        if user.id == current_user.id or not user.player:
+            continue
+        if not check_time(user.player.last_defend):
+            continue
+        available_users.append(
+            (user.username, f'{user.username} (мощь армии: {get_full_army_power(user.player.army)})')
+        )
     raidform = RaidForm()
     raidform.users.choices = available_users
+    player = db_sess.query(Player).get(current_user.id)
+    attack_raids = db_sess.query(Raid).filter(Raid.attacker_id == player.id)
+    defense_raids = db_sess.query(Raid).filter(Raid.defender_id == player.id)
     if raidform.validate_on_submit():
         raid_ = Raid()
         message = ''
         username = raidform.users.data
-        attacker = db_sess.query(User).filter(User.username == current_user.username).first().player
+        attacker = player
         defender = db_sess.query(User).filter(User.username == username).first().player
         raid_.attacker_id, raid_.defender_id = attacker.id, defender.id
         army_attacker = attacker.army
@@ -230,12 +237,12 @@ def raid():
                     level=1
                 )
                 db_sess.add(prize)
-                message += f'Вы открыли новую расу - {prize_army.race.title}!'
-                raid_.prize_race_title = prize_army.race.title
-                raid_.prize_race_number = prize_army_number
+                message += f' Вы открыли новую расу - {prize_army.race.title}!'
             else:
                 army_to_add = list(filter(lambda x: x.race_id == prize_army.race_id, army_attacker))[0]
                 army_to_add.number += prize_army_number
+            raid_.prize_race_title = prize_army.race.title
+            raid_.prize_race_number = prize_army_number
             defender.last_defend = datetime.now()
         else:
             raid_.is_success = False
@@ -244,8 +251,9 @@ def raid():
             message += 'Рейд завершился неудачей. Вы потеряли часть своей армии.'
         db_sess.add(raid_)
         db_sess.commit()
-        return render_template('raid.html', raidform=raidform, message=message)
-    return render_template('raid.html', raidform=raidform)
+        return render_template(
+            'raid.html', raidform=raidform, message=message, raids=(attack_raids, defense_raids))
+    return render_template('raid.html', raidform=raidform, raids=(attack_raids, defense_raids))
 
 
 def check_time(last_defend):
@@ -270,6 +278,12 @@ def get_stats_with_upgrades(army):
     total_attack = army.number * army.race.attack * (army.level if army.level == 1 else army.level * 2)
     total_defense = army.number * army.race.defense * (army.level if army.level == 1 else army.level * 2)
     return total_attack, total_defense
+
+
+def get_full_army_power(army_list):
+    total_attack = sum([get_stats_with_upgrades(x)[0] for x in army_list])
+    total_defense = sum([get_stats_with_upgrades(x)[1] for x in army_list])
+    return (total_attack + total_defense) // 2
 
 
 if __name__ == '__main__':
