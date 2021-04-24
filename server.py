@@ -15,7 +15,7 @@ from flask_login import login_user, LoginManager, logout_user, \
     login_required, current_user
 from get_money import main
 from random import choice, uniform
-from math import ceil
+from math import ceil, floor
 from datetime import datetime, timedelta
 import os
 
@@ -34,8 +34,6 @@ def root():
 
         db_sess = db_session.create_session()
         player = db_sess.query(Player).get(current_user.id)
-
-        message_buy, message_upg = '', ''
         total_attack = sum([get_stats_with_upgrades(x)[0] for x in player.army])
         total_defense = sum([get_stats_with_upgrades(x)[1] for x in player.army])
         army_power = (total_attack + total_defense) // 2
@@ -56,7 +54,7 @@ def root():
             race = db_sess.query(Race).get(race_id)
             if race.cost * number > player.money:
                 return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                       message_buy='Недостаточно денег!', message_upg='')
+                                       message_buy='Недостаточно денег!')
             else:
                 player.money -= race.cost * number
                 army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
@@ -69,7 +67,7 @@ def root():
             army = list(filter(lambda x: x.race_id == race_id, player.army))[0]
             if army.level == 3:
                 return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                       message_buy='', message_upg='Достигнут максимальный уровень!')
+                                       message_upg='Достигнут максимальный уровень!')
             else:
                 total = 0
                 if army.level == 2:
@@ -78,14 +76,13 @@ def root():
                     total = army.number * army.race.cost + 1000
                 if total > player.money:
                     return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                                           message_buy='', message_upg='Недостаточно денег!')
+                                           message_upg='Недостаточно денег!')
                 else:
                     player.money -= total
                     army.level += 1
                     db_sess.commit()
                     return redirect('/')
-        return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other,
-                               message_buy=message_buy, message_upg=message_upg)
+        return render_template('main.html', buy_form=buy_form, upgrade_form=upgrade_form, other=other)
     return render_template('index.html')
 
 
@@ -173,13 +170,13 @@ def choose_area(id):
 @login_required
 def leaders_board():
     db_sess = db_session.create_session()
-    users = [x for x in db_sess.query(User).all() if x.player]
+    players = db_sess.query(Player).all()
     leaders = []
-    for x in users:
-        leaders.append((x.username, sum([item.number for item in x.player.army]),
-                        ((sum([get_stats_with_upgrades(item)[0] for item in x.player.army]) +
-                          sum([get_stats_with_upgrades(item)[1] for item in x.player.army])) // 2),
-                        x.player.money))
+    for player in players:
+        leaders.append((
+            player.user.username, sum([item.number for item in player.army]),
+            get_full_army_power(player.army), player.money
+        ))
     leaders.sort(key=lambda x: (-x[2], -x[1], -x[3], x[0]))
     return render_template('leadersboard.html', leaders=leaders)
 
@@ -194,18 +191,25 @@ def profile():
 @login_required
 def raid():
     db_sess = db_session.create_session()
-
-    available_users = [
-        user.username for user in db_sess.query(User).all() if user.id != current_user.id
-        and user.player and check_time(user.player.last_defend)
-    ]
+    available_users = []
+    for user in db_sess.query(User).all():
+        if user.id == current_user.id or not user.player:
+            continue
+        if not check_time(user.player.last_defend):
+            continue
+        available_users.append(
+            (user.username, f'{user.username} (мощь армии: {get_full_army_power(user.player.army)})')
+        )
     raidform = RaidForm()
     raidform.users.choices = available_users
+    player = db_sess.query(Player).get(current_user.id)
+    attack_raids = db_sess.query(Raid).filter(Raid.attacker_id == player.id)
+    defense_raids = db_sess.query(Raid).filter(Raid.defender_id == player.id)
     if raidform.validate_on_submit():
         raid_ = Raid()
         message = ''
         username = raidform.users.data
-        attacker = db_sess.query(User).filter(User.username == current_user.username).first().player
+        attacker = player
         defender = db_sess.query(User).filter(User.username == username).first().player
         raid_.attacker_id, raid_.defender_id = attacker.id, defender.id
         army_attacker = attacker.army
@@ -233,12 +237,12 @@ def raid():
                     level=1
                 )
                 db_sess.add(prize)
-                message += f'Вы открыли новую расу - {prize_army.race.title}!'
-                raid_.prize_race_title = prize_army.race.title
-                raid_.prize_race_number = prize_army_number
+                message += f' Вы открыли новую расу - {prize_army.race.title}!'
             else:
                 army_to_add = list(filter(lambda x: x.race_id == prize_army.race_id, army_attacker))[0]
                 army_to_add.number += prize_army_number
+            raid_.prize_race_title = prize_army.race.title
+            raid_.prize_race_number = prize_army_number
             defender.last_defend = datetime.now()
         else:
             raid_.is_success = False
@@ -247,8 +251,9 @@ def raid():
             message += 'Рейд завершился неудачей. Вы потеряли часть своей армии.'
         db_sess.add(raid_)
         db_sess.commit()
-        return render_template('raid.html', raidform=raidform, message=message)
-    return render_template('raid.html', raidform=raidform)
+        return render_template(
+            'raid.html', raidform=raidform, message=message, raids=(attack_raids, defense_raids))
+    return render_template('raid.html', raidform=raidform, raids=(attack_raids, defense_raids))
 
 
 def check_time(last_defend):
@@ -260,8 +265,10 @@ def check_time(last_defend):
 
 
 def raid_losses(winner, loser):
-    losses_winner = [round(x.number * uniform(0.2, 0.3)) for x in winner.army]
-    losses_loser = [round(x.number * uniform(0.35, 0.45)) for x in loser.army]
+    losses_loser = [round(x.number * uniform(0.4, 0.5)) for x in loser.army]
+    total_losses_loser, winner_army_num = sum(losses_loser), len(winner.army)
+    max_army_losses_winner = total_losses_loser // winner_army_num
+    losses_winner = [floor(uniform(0.75, 0.85) * max_army_losses_winner) for _ in winner.army]
     for i, army in enumerate(winner.army):
         army.number -= losses_winner[i]
     for i, army in enumerate(loser.army):
@@ -273,6 +280,12 @@ def get_stats_with_upgrades(army):
     total_attack = army.number * army.race.attack * (army.level if army.level == 1 else army.level * 2)
     total_defense = army.number * army.race.defense * (army.level if army.level == 1 else army.level * 2)
     return total_attack, total_defense
+
+
+def get_full_army_power(army_list):
+    total_attack = sum([get_stats_with_upgrades(x)[0] for x in army_list])
+    total_defense = sum([get_stats_with_upgrades(x)[1] for x in army_list])
+    return (total_attack + total_defense) // 2
 
 
 if __name__ == '__main__':

@@ -1,26 +1,103 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>Напасть на другого игрока</h3>
-<p>*За успешный рейд вы получаете часть денег и юнитов игрока, на которого вы напали*</p>
-<p>*В случае победы у вас также есть шанс получить несколько юнитов одной из рас армии
-    противника, которой у вас ещё нет (открыть новую расу)*</p>
-<p>*В любом случае потери будут и у вас, и у вашего оппонента, но у победившего их будет меньше*</p>
-{% if raidform.users.choices|length >= 1 %}
-    <form action="" method="post">
-        {{ raidform.hidden_tag() }}
-        {{ raidform.users.label }}
-        {% for item in raidform.users %}
-            <div class="raid-choose">
-                <p class="text-success">
-                    {{ item }} - {{ item.label }}
-                </p>
-            </div>
-        {% endfor %}
-        <p>{{ raidform.submit(type="submit", class="btn btn-primary") }}</p>
-        {{ message }}
-    </form>
-{% else %}
-<p>Тут пока никого нет</p>
-{% endif %}
+    <h3>Совершить рейд на другого игрока</h3>
+    <p>*За успешный рейд вы получаете часть денег и юнитов игрока, на которого вы напали*</p>
+    <p>*В случае победы у вас также есть шанс получить несколько юнитов одной из рас армии
+        противника, которой у вас ещё нет (открыть новую расу)*</p>
+    <p>*В любом случае потери будут и у вас, и у вашего оппонента, но у победившего их будет меньше*</p>
+    {% if raidform.users.choices|length >= 1 %}
+        <form action="" method="post">
+            {{ raidform.hidden_tag() }}
+            {{ raidform.users.label }}<br>
+            {% for item in raidform.users %}
+                <div class="raid-choose">
+                    <p class="text-success">
+                        {{ item }} - {{ item.label }}
+                    </p>
+                </div>
+            {% endfor %}<br>
+            <p class="raid-submit">{{ raidform.submit(type="submit", class="btn btn-primary") }}</p>
+            {{ message }}
+        </form>
+    {% else %}
+    <p>Тут пока никого нет</p>
+    {% endif %}
+    <div>
+        <h3>История рейдов</h3>
+        <h4>Ваши рейды (вы атаковали)</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Оппонент</th>
+                    <th scope="col">Победа?</th>
+                    <th scope="col">Ваши потери</th>
+                    <th scope="col">Потери оппонента</th>
+                    <th scope="col">Полученные деньги</th>
+                    <th scope="col">Раса полученной армии</th>
+                    <th scope="col">Кол-во полученной армии</th>
+                    <th scope="col">Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for raid in raids[0] %}
+                <tr>
+                    {% if raid.is_success %}
+                        <td class="table-success">{{ raid.defender.user.username }}</td>
+                        <td class="table-success">Да</td>
+                        <td class="table-success">{{ raid.losses_att }}</td>
+                        <td class="table-success">{{ raid.losses_def }}</td>
+                        <td class="table-success">{{ raid.withdraw_money }}</td>
+                        <td class="table-success">{{ raid.prize_race_title }}</td>
+                        <td class="table-success">{{ raid.prize_race_number }}</td>
+                        <td class="table-success">{{ raid.occurrence_date.strftime('%d %b, %Y %H:%M:%S') }}</td>
+                    {% else %}
+                        <td class="table-danger">{{ raid.defender.user.username }}</td>
+                        <td class="table-danger">Нет</td>
+                        <td class="table-danger">{{ raid.losses_att }}</td>
+                        <td class="table-danger">{{ raid.losses_def }}</td>
+                        <td class="table-danger">-</td>
+                        <td class="table-danger">-</td>
+                        <td class="table-danger">-</td>
+                        <td class="table-danger">{{ raid.occurrence_date.strftime('%d %b, %Y %H:%M:%S') }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h4>Рейды на вас (вы защищались)</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Оппонент</th>
+                    <th scope="col">Победа?</th>
+                    <th scope="col">Ваши потери</th>
+                    <th scope="col">Потери оппонента</th>
+                    <th scope="col">Потерянные деньги</th>
+                    <th scope="col">Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for raid in raids[1] %}
+                <tr>
+                    {% if not raid.is_success %}
+                        <td class="table-success">{{ raid.attacker.user.username }}</td>
+                        <td class="table-success">Да</td>
+                        <td class="table-success">{{ raid.losses_att }}</td>
+                        <td class="table-success">{{ raid.losses_def }}</td>
+                        <td class="table-success">-</td>
+                        <td class="table-success">{{ raid.occurrence_date.strftime('%d %b, %Y %H:%M:%S') }}</td>
+                    {% else %}
+                        <td class="table-danger">{{ raid.attacker.user.username }}</td>
+                        <td class="table-danger">Нет</td>
+                        <td class="table-danger">{{ raid.losses_att }}</td>
+                        <td class="table-danger">{{ raid.losses_def }}</td>
+                        <td class="table-danger">{{ raid.withdraw_money }}</td>
+                        <td class="table-danger">{{ raid.occurrence_date.strftime('%d %b, %Y %H:%M:%S') }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
