@@ -69,6 +69,39 @@
             <span class="visually-hidden">Next</span>
         </a>
     </div>
+    <h1>О игре.</h1>
+    <p>
+        Проект "War of Krasnogorsk" - это браузерная игра, в которой вы получите возможность
+        сражаться за небольшой городок Красногорск, соревнуясь с другими игроками в реальном
+        времени. На старте у вас на выбор будет четыре района, в каждом из которых живут свои
+        обитатели. Наращивайте армию, накапливайте деньги, совершайте рейды на соседей и
+        попробуйте стать повелителем Красногорка!
+    </p>
+    <div id="carouselExampleFade" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ url_for('static', filename='img/area_1.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Чернево 1 - Бомжи</h5>
+                    <p>
+                        Самые хладнокровная раса в Красногорске,
+                        за чекушку водки они готовы сделать все что угодно,
+                        от танцев под моргенштерна в тикток до завоевания всего мира.
+                    </p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='img/area_2.jpg') }}" class="d-block w-100">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Чернево 2 - Интеллигенты</h5>
+                    <p>
+                        Интеллигенты обосновались на Чернево 2, именно отсюда по Красногорску
+                        распространяется поток знаний. Живут богато, готовы переучить другую
+                        расу. Полностью отдаются науке, считая, что именно за ней сила.
+                    </p>
+                </div>
+            </div>
+    </div>
 
 
 {% endblock %}
